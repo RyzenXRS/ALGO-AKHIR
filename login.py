@@ -63,7 +63,7 @@ def program():
             else: 
                 print("Kamu kurang beruntung")
                 print(f"Jawaban : {angka_random} ")
-        inputan_stop = input("Apakah kamu ingin lanjut [y/t] : ")
+        inputan_stop = input("Apakah kamu ingin lanjut [y/t] : ").lower()
         if inputan_stop == 't':
             break
         elif inputan_stop == 'y':
