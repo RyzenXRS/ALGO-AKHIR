@@ -11,11 +11,10 @@ def list_resep():
     match_resep = resep[resep['nama_resep'].str.lower() == input_resep]
     
     if not match_resep.empty:
-        # Menampilkan setiap kolom dengan cara vertikal
         for col in match_resep.columns:
             print(f"{col}:")
             print(match_resep[col].values[0])
-            print()  # Untuk memberi jarak antar kolom
+            print()
     else:
         print("Resep tidak ditemukan")
 
