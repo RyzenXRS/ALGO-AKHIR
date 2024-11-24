@@ -1,23 +1,22 @@
 import pandas as pd
 
-# Membaca file CSV yang berisi data resep
+ 
 resep = pd.read_csv("list_resep.csv")
 
-# Mengubah index menjadi 1-based (dimulai dari 1, bukan 0)
+
 resep.index += 1
 
-# Menampilkan daftar nama resep dengan nomor
+
 print("Daftar Resep:")
 print(resep[['nama_resep']])
 
-# Meminta input dari pengguna berupa angka untuk memilih resep
 try:
     input_resep = int(input("Pilih nomor resep yang kamu mau: "))
     
-    # Cek apakah input_resap valid (nomor yang dipilih ada dalam index)
+    
     print("Kamu memilih resep:", resep.iloc[input_resep - 1]['nama_resep'])
     if input_resep in resep.index:
-        # Menampilkan detail resep yang dipilih
+        
         match_resep = resep.loc[input_resep]
         for col in match_resep.index:
             print(f"{col}:")
