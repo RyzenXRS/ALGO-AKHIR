@@ -1,12 +1,19 @@
 import pandas as pd
 import random
 import os 
+import login as log
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear' )
 
+def cek_file(file):
+    try:
+        return pd.read_csv(f"{file}")
+    except FileNotFoundError:
+        print("File tidak di temukan. \n Periksa kembali lokasi file")
+
 def login():
-    data = pd.read_csv('data_login.csv')
+    data = cek_file('data_login.csv')
 
     username = input("Masukkan Username : ").strip()
     password = input("Masukkan Password : ").strip()
@@ -21,8 +28,10 @@ def login():
 
     if len(user)>0:
         clear_terminal()
+        print('=' * (36+len(role)))
         print(f"Selamat datang {username}, Kamu login sebagai {role}")
         print("Login Berhasil")
+        print('=' * (36+len(role)))
         user_login = (usn,psw,role)
         program()
         return user_login
@@ -30,9 +39,11 @@ def login():
         print("Salah Username / Password le")
 
 def buat_akun():
-    data = pd.read_csv("data_login.csv")
+    data = cek_file("data_login.csv")
         
     nama = input("Masukkan nama : ").strip()
+
+    #Cek nama pada database
     if nama in data['username'].values:
         print("Username tidak tersedia. Silahkan coba lagi !")
         print("Tekan enter untuk coba kembali")
@@ -40,50 +51,39 @@ def buat_akun():
         print(f"Berhasil menambahkan {nama} ke dalam database !")
     
     password = input("Masukkan password : ").strip()
-    tambah_user = pd.DataFrame({
-        'username' : [nama],
-        'password' : [password]
-    })
-    users = pd.concat([data, tambah_user])
-    users.to_csv("data_login.csv", index=False)
+    print("-" * 26)
+    print("Apakah data sudah benar: ")
+    print(" [1] Konfirmasi")
+    print(" [2] Ulangi")
+    print(" [3] Batal")
+    print("-" * 26)
+    while True: 
+        pilih = input("Pilih menu [1/2/3]:")
+        match pilih:
+            case '1':
+                tambah_user = pd.DataFrame({
+                    'username' : [nama],
+                    'password' : [password]
+                })
+                users = pd.concat([data, tambah_user])
+                users.to_csv("data_login.csv", index=False)
 
-    print("\n==== Registrasi berhasil! ====")
-    print(f"'{nama}' telah ditambahkan sebagai anggota baru.")
-    print("Selamat Datang di Aplikasi TetaBiz masukkan kode : XUSAS untuk mendapatkan diskon !!")
-    input("Tekan Enter untuk kembali ke Menu.")
-    menu()
+                print("\n==== Registrasi berhasil! ====")
+                print(f"'{nama}' telah ditambahkan sebagai anggota baru.")
+                print("Selamat Datang di Aplikasi TetaBiz masukkan kode : XUSAS untuk mendapatkan diskon !!")
+                input("Tekan Enter untuk kembali ke Menu.")
+                return
+            case '2':
+                break
+            case '3':
+                print("=" * 40)
+                print("Pembuatan Akun di Batalkan")
+                print("Tekan Enter untuk kembali ke Menu.")
+                return
+            case _:
+                print("Pilihan tidak ada")
+                input("Tekan enter untuk mencoba kembali")
 
-def list_resep():
-    import pandas as pd
-
-def list_resep():
-    while True:
-        resep = pd.read_csv("list_resep.csv")
-
-        resep.index += 1
-        print(resep[['nama_resep']])
-
-        input_resep = input("Resep mana yang kamu mau ? ").lower()
-
-        match_resep = resep[resep['nama_resep'].str.lower() == input_resep]
-        
-        if not match_resep.empty:
-            for col in match_resep.columns:
-                print(f"{col}:")
-                print(match_resep[col].values[0])
-                print()
-        else:
-            print("Resep tidak ditemukan")
-
-        inputan_stop = input("Apakah kamu ingin lanjut [y/t] : ").lower()
-        if inputan_stop == 't':
-            menu()
-            break
-        elif inputan_stop == 'y':
-            clear_terminal()
-            list_resep()
-        else:
-            print("Tidak ada pilihan !")
 
 
 def program():
@@ -121,8 +121,7 @@ def menu_tampilan():
 ║┌────────────────┐║
 ║│  1. Login      │║
 ║│  2. Register   │║
-║│  3. Ide resep  │║
-║│  4. Keluar     │║
+║│  3. Keluar     │║    
 ║├────────────────┤║
 ║│   Login Page   │║
 ║└────────────────┘║
@@ -143,14 +142,7 @@ def menu():
                 buat_akun()
                 return pilihan
             case "3":
-                print("Mainenance bentar yach")
-                list_resep()
-                return pilihan
-            case "4":
                 print("Terima kasih !")
                 return pilihan
             case _:
                 print("Pilihan yang kamu pilih tidak ada")
-            
-
-menu()
