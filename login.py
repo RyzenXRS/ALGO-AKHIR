@@ -3,6 +3,8 @@ import random
 import os 
 import login as log
 
+status_login = False
+
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear' )
 
@@ -13,6 +15,7 @@ def cek_file(file):
         print("File tidak di temukan. \n Periksa kembali lokasi file")
 
 def login():
+    global status_login
     data = cek_file('data_login.csv')
 
     username = input("Masukkan Username : ").strip()
@@ -22,9 +25,11 @@ def login():
         (data['username'] == username) &
         (data['password'] == password) 
     ] 
-    usn = data.iloc[0]['username']
-    psw = data.iloc[0]['password']
-    role = data.iloc[0]['role']
+    usn = user.iloc[0]['username']
+    psw = user.iloc[0]['password']
+    role = user.iloc[0]['role']
+
+    status_login = True
 
     if len(user)>0:
         clear_terminal()
@@ -33,7 +38,6 @@ def login():
         print("Login Berhasil")
         print('=' * (36+len(role)))
         user_login = (usn,psw,role)
-        program()
         return user_login
     else : 
         print("Salah Username / Password le")
@@ -52,9 +56,9 @@ def buat_akun():
     
     password = input("Masukkan password : ").strip()
     print("-" * 26)
-    print("Apakah data sudah benar: ")
-    print(" [1] Konfirmasi")
-    print(" [2] Ulangi")
+    print("Daftar Sebagai : ")
+    print(" [1] Pembeli")
+    print(" [2] Penjual")
     print(" [3] Batal")
     print("-" * 26)
     while True: 
@@ -63,53 +67,53 @@ def buat_akun():
             case '1':
                 tambah_user = pd.DataFrame({
                     'username' : [nama],
-                    'password' : [password]
+                    'password' : [password],
+                    'role' : ['pembeli']
                 })
                 users = pd.concat([data, tambah_user])
                 users.to_csv("data_login.csv", index=False)
 
                 print("\n==== Registrasi berhasil! ====")
-                print(f"'{nama}' telah ditambahkan sebagai anggota baru.")
+                print(f"'{nama}' telah ditambahkan sebagai Pembeli baru.")
                 print("Selamat Datang di Aplikasi TetaBiz masukkan kode : XUSAS untuk mendapatkan diskon !!")
                 input("Tekan Enter untuk kembali ke Menu.")
-                return
-            case '2':
                 break
+            case '2':
+                tambah_user = pd.DataFrame({
+                    'username' : [nama],
+                    'password' : [password],
+                    'role' : ['penjual']
+                })
+                users = pd.concat([data, tambah_user])
+                users.to_csv("data_login.csv", index=False)
+
+                print("\n==== Registrasi berhasil! ====")
+                print(f"'{nama}' telah ditambahkan sebagai Penjual baru.")
+                print("Selamat Datang di Aplikasi TetaBiz masukkan kode : XUSAS untuk mendapatkan diskon !!")
+                input("Tekan Enter untuk kembali ke Menu.")
             case '3':
                 print("=" * 40)
                 print("Pembuatan Akun di Batalkan")
-                print("Tekan Enter untuk kembali ke Menu.")
+                input("Tekan Enter untuk kembali ke Menu.")
                 return
             case _:
                 print("Pilihan tidak ada")
                 input("Tekan enter untuk mencoba kembali")
+                            
+def logout():
+    global status_login  # Mengakses variabel global login_status
+    if status_login:
+        clear_terminal()
+        print("=" * 19)
+        print("= Logout Berhasil =")
+        print("=" * 19)
+        input("Tekan Enter untuk melanjutkan.")
 
-
-
-def program():
-    while True:
-        angka = int(input("Masukkan angka kamu : "))
-        angka_random = random.randint(0,100)
-
-        if angka > 100: 
-            print("Angka tidak boleh lebih dari 100")
-        else:
-            if angka == angka_random:
-                print("Kamu benar menebak angka !!")
-            else: 
-                print("Kamu kurang beruntung")
-                print(f"Jawaban : {angka_random} ")
-
-        inputan_stop = input("Apakah kamu ingin lanjut [y/t] : ").lower()
-        if inputan_stop == 't':
-            menu()
-            break
-        elif inputan_stop == 'y':
-            clear_terminal()
-            program()
-        else:
-            print("Tidak ada pilihan !")
-            
+        status_login = False  # Mengubah status login menjadi False setelah logout
+        return status_login
+    else:
+        print("Anda belum login.")
+        input("Tekan Enter untuk melanjutkan.")
 
             
 def menu_tampilan():
