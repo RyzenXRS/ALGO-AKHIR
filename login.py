@@ -91,6 +91,7 @@ def buat_akun():
                 print(f"'{nama}' telah ditambahkan sebagai Penjual baru.")
                 print("Selamat Datang di Aplikasi TetaBiz masukkan kode : XUSAS untuk mendapatkan diskon !!")
                 input("Tekan Enter untuk kembali ke Menu.")
+                break
             case '3':
                 print("=" * 40)
                 print("Pembuatan Akun di Batalkan")
